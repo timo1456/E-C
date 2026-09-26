@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGIN PAGE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='log.css') }}">
+</head>
+<body>
+    <div class="container">
+    <H1>WELCOME!</H1>
+    <p style="text-align: left;">Create your Account</p>
+    <p>{{ user_exist }}</p>
+    <form method="POST">
+        <label>Name</label>
+        <input class="input" type="text" name="input-name" placeholder="Enter your email" required>
+        <label>Email</label>
+        <input class="input" type="email" name="input-email" placeholder="Enter your email" required><br>
+        <label>Password</label>
+        <input class="input" type="password" name="input-pass" placeholder="Enter your password" required><br>
+        <button>Create Account</button>
+    </form><br>
+    <a href="/login">Sign In</a><br>
+    </div>
+    
+</body>
+</html>

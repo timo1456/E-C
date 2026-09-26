@@ -1,0 +1,35 @@
+<html>
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='log.css') }}">
+</head>
+<body>
+    <div class="container">
+    <H1>WELCOME BACK!</H1>
+    <p style="text-align: left;">Login into your account</p>
+    <p>{{ invalid }}</p>
+     <form method="POST">
+        <label>Email</label>
+        <input class="input" name="email" type="email" placeholder="Enter your email" required><br>
+        <div class="pass-container">
+        </div><br>
+        <label>Password</label>
+        <input class="input" name="password" type="password" placeholder="Enter your password" required>
+        <div class="pass-container" style="text-align: left; font-size: 14px;">
+            <div>
+                <input style="transform: scale(0.8);" type="checkbox">
+                <label>Remember Me</label>
+            </div>
+        </div><br>
+        <button>Login</button>
+     </form>
+     <p class="account">
+        Don't have an account
+        <a href="/register"> Create Account</a>
+     </p><br>
+     <a href="">Forgot password?</a>
+    </div>
+</body>
+</html>
