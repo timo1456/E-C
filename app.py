@@ -67,14 +67,24 @@ def register():
         email = request.form.get("input-email", "").strip()
         password = request.form.get("input-pass", "")
 
-        existing = User.query.filter_by(
+        existing_username = User.query.filter_by(
             username=username
         ).first()
 
-        if existing:
+        existing_email = User.query.filter_by(
+            email=email
+        ).first()
+
+        if existing_username:
             return render_template(
                 "register.html",
-                user_exist = "User already exists"
+                user_exist="Username already exists"
+            )
+
+        if existing_email:
+            return render_template(
+                "register.html",
+                user_exist="Email already exists"
             )
         
         user = User(
@@ -118,7 +128,8 @@ def login():
         
 
         return render_template(
-        "login.html"
+            "login.html",
+            invalid="Invalid email or password"
         )
     return render_template ("login.html")
 
@@ -150,7 +161,7 @@ def add_items_page():
         "add-items.html"
     )
 
-@app.route("/add-items", methods =["GET", "PST"])
+@app.route("/add-items", methods=["POST"])
 def add_items():
     if request.method == "POST":
 
@@ -160,23 +171,20 @@ def add_items():
         pr_category = request.form.get("pr-category").strip()
 
 
-        stock = Stock(     
-            pr_name = pr_name,
-            pr_price = pr_price,
-            pr_img = pr_img,
-            pr_category = pr_category
+        stock = Stock(
+            pr_name=pr_name,
+            pr_price=pr_price,
+            pr_category=pr_category,
+            pr_img=pr_img.read(),
+            pr_img_minetype=pr_img.mimetype
         )
-
-        if pr_img:
-            stock.pr_img = pr_img.read()
 
         db.session.add(stock)
         db.session.commit()
 
 
     return render_template(
-        "add-items.html",
-        saved = "Item saved"
+        "add-items.html"
     )
 
 
