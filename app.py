@@ -21,10 +21,8 @@ basedir = os.path.abspath(
     os.path.dirname(__file__)
 )
 
-app.config["SQLALCHEMY_DATABASE_URI"] = (
-    "sqlite:///"
-    + os.path.join(basedir, "store.db")
-)
+database_path = os.path.join(basedir, "store.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + database_path.replace(os.sep, "/")
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -168,12 +166,14 @@ def add_items():
         pr_name = request.form.get("pr-name").strip()
         pr_price = request.form.get("pr-price")
         pr_img = request.files.get("pr-img")
-        pr_category = request.form.get("pr-category").strip()
+        pr_category = request.form.get("pr-category", "").strip()
 
+        if not pr_name or not pr_price or not pr_category or not pr_img:
+            return render_template("add-items.html", saved="All product fields are required")
 
         stock = Stock(
             pr_name=pr_name,
-            pr_price=pr_price,
+            pr_price=int(pr_price),
             pr_category=pr_category,
             pr_img=pr_img.read(),
             pr_img_minetype=pr_img.mimetype
@@ -182,6 +182,10 @@ def add_items():
         db.session.add(stock)
         db.session.commit()
 
+        return render_template(
+            "add-items.html",
+            saved="Product saved successfully"
+        )
 
     return render_template(
         "add-items.html"
