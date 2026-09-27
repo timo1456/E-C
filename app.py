@@ -166,7 +166,20 @@ def product_image(product_id):
     if not product.pr_img:
         return "", 404
 
-    return Response(product.pr_img, mimetype="image/jpeg")
+    # Detect common uploaded image formats from their file signatures.
+    # This keeps PNG/GIF/WEBP uploads from being incorrectly sent as JPEG.
+    if product.pr_img.startswith(b"\\x89PNG"):
+        mime_type = "image/png"
+    elif product.pr_img.startswith(b"\\xff\\xd8\\xff"):
+        mime_type = "image/jpeg"
+    elif product.pr_img.startswith((b"GIF87a", b"GIF89a")):
+        mime_type = "image/gif"
+    elif product.pr_img.startswith(b"RIFF") and product.pr_img[8:12] == b"WEBP":
+        mime_type = "image/webp"
+    else:
+        mime_type = "application/octet-stream"
+
+    return Response(product.pr_img, mimetype=mime_type)
 
 
 @app.route("/add-items", methods=["GET", "POST"])
