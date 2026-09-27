@@ -1,0 +1,10 @@
+aside {
+    background-color: aquamarine;
+    height: 100%;
+    width: 10%;
+}
+body {
+    display: flex;
+    padding: none;
+    background-color: beige;
+}

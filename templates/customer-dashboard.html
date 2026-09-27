@@ -1,3 +1,21 @@
 <html>
     <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='cs-dash.css') }}">
+<body>
+    <aside>
+
+    </aside>
+    <div>
+        <p>Welcome, {{ user }}</p>
+        <div>
+            <form method="POST">
+                <img src="" alt="">
+                <p>Product Name {{ ProductName }}</p>
+                <p>Product Price {{ ProductPrice }}</p>
+                <button>Add to cart</button>
+            </form>
+        </div>
+        <a href="/logout">Logout</a>
+    </div>
+</body>
 </html>

@@ -12,5 +12,4 @@ class Stock(db.Model):
     pr_name = db.Column(db.String(100), nullable=False)
     pr_price = db.Column(db.Integer, nullable=False)
     pr_img = db.Column(db.LargeBinary, nullable=True)
-    pr_img_minetype = db.Column(db.String(50), nullable=False)
     pr_category = db.Column(db.String(100), nullable=False)
