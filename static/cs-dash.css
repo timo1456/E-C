@@ -2,9 +2,16 @@ aside {
     background-color: aquamarine;
     height: 100%;
     width: 10%;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    margin: 0;
 }
 body {
-    display: flex;
     padding: none;
     background-color: beige;
+    margin: 0;
+    display: flex;
 }
