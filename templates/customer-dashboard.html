@@ -3,88 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Dashboard</title>
+    <title>Store | Products</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='cs-dash.css') }}">
 </head>
 <body>
-    <aside>
-        <h2>Store</h2>
-        <a href="{{ url_for('dashboard') }}">Products</a>
-        <a href="{{ url_for('cart') }}">Cart ({{ cart_count }})</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
-    </aside>
 
     <main class="customer-content">
-        <div class="top-bar">
-            <div>
-                <p class="welcome">Welcome, {{ user }}</p>
-                <h1>Products</h1>
+
+        <!-- =====================================================
+             HEADER
+             Keeps the customer's name visible while giving the
+             dashboard a clean, modern e-commerce appearance.
+             ===================================================== -->
+        <header class="dashboard-header">
+            <div class="brand">
+                <span class="brand-mark">E</span>
+                <div>
+                    <strong>Store</strong>
+                    <span>Shop smarter</span>
+                </div>
             </div>
 
-            <!-- =====================================================
-                 PRODUCT SEARCH
-                 Searches the products saved by the admin using the
-                 product name. The result is still randomized.
-                 ===================================================== -->
+            <div class="account-area">
+                <div class="account-avatar">{{ user[0]|upper }}</div>
+                <div class="account-name">
+                    <span>Welcome back</span>
+                    <strong>{{ user }}</strong>
+                </div>
+            </div>
+        </header>
+
+        <!-- =====================================================
+             HERO / SEARCH AREA
+             Search is kept connected to the existing /dashboard
+             route, so no backend changes are required.
+             ===================================================== -->
+        <section class="hero">
+            <div class="hero-copy">
+                <span class="eyebrow">DISCOVER SOMETHING NEW</span>
+                <h1>Find something<br><span>you'll love.</span></h1>
+                <p>Browse products from our store and add your favourites to your cart.</p>
+            </div>
+
             <form class="search-form" method="GET" action="{{ url_for('dashboard') }}">
+                <span class="search-icon">⌕</span>
                 <input
                     type="search"
                     name="search"
                     value="{{ search }}"
-                    placeholder="Search for a product..."
+                    placeholder="Search products..."
                     autocomplete="off"
+                    aria-label="Search products"
                 >
                 <button type="submit">Search</button>
                 {% if search %}
-                    <a href="{{ url_for('dashboard') }}">Clear</a>
+                    <a class="clear-search" href="{{ url_for('dashboard') }}">Clear</a>
                 {% endif %}
             </form>
-        </div>
+        </section>
 
-        <!-- =========================================================
-             PRODUCT GRID
-             These cards are generated from the Stock records in the
-             database, so anything added by the admin appears here.
-             ========================================================= -->
-        {% if products %}
-            <section class="product-grid">
-                {% for product in products %}
-                    <article class="product-card">
-                        {% if product.pr_img %}
-                            <img
-                                src="{{ url_for('product_image', product_id=product.id) }}"
-                                alt="{{ product.pr_name }}"
-                                class="product-image"
-                            >
-                        {% else %}
-                            <div class="no-image">No image</div>
-                        {% endif %}
-
-                        <div class="product-info">
-                            <p class="category">{{ product.pr_category }}</p>
-                            <h2>{{ product.pr_name }}</h2>
-                            <p class="price">₦{{ "{:,.0f}".format(product.pr_price) }}</p>
-
-                            <!-- Add the selected product to the logged-in
-                                 customer's database-backed cart. -->
-                            <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}">
-                                <button class="add-cart-button" type="submit">Add to Cart</button>
-                            </form>
-                        </div>
-                    </article>
-                {% endfor %}
-            </section>
-        {% else %}
-            <div class="empty-products">
-                {% if search %}
-                    <h2>No products found</h2>
-                    <p>No product matched "{{ search }}".</p>
-                {% else %}
-                    <h2>No products available yet</h2>
-                    <p>Products added by the admin will appear here.</p>
+        <!-- =====================================================
+             PRODUCT SECTION
+             Products are still supplied by the existing Flask
+             view and remain randomly ordered for now.
+             ===================================================== -->
+        <section class="products-section">
+            <div class="section-heading">
+                <div>
+                    <span class="section-label">OUR STORE</span>
+                    <h2>{% if search %}Search results{% else %}Featured products{% endif %}</h2>
+                </div>
+                {% if products %}
+                    <span class="product-count">{{ products|length }} product{% if products|length != 1 %}s{% endif %}</span>
                 {% endif %}
             </div>
-        {% endif %}
+
+            {% if products %}
+                <div class="product-grid">
+                    {% for product in products %}
+                        <article class="product-card">
+                            <div class="product-image-wrap">
+                                {% if product.pr_img %}
+                                    <img
+                                        src="{{ url_for('product_image', product_id=product.id) }}"
+                                        alt="{{ product.pr_name }}"
+                                        class="product-image"
+                                    >
+                                {% else %}
+                                    <div class="no-image">
+                                        <span>No image</span>
+                                    </div>
+                                {% endif %}
+                                <span class="category-pill">{{ product.pr_category }}</span>
+                            </div>
+
+                            <div class="product-info">
+                                <h3>{{ product.pr_name }}</h3>
+                                <div class="product-bottom">
+                                    <p class="price">₦{{ "{:,.0f}".format(product.pr_price) }}</p>
+
+                                    <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+                                        <button class="add-cart-button" type="submit" aria-label="Add {{ product.pr_name }} to cart">
+                                            <span>+</span>
+                                            Add to cart
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-products">
+                    <div class="empty-icon">⌕</div>
+                    {% if search %}
+                        <h2>No products found</h2>
+                        <p>Nothing matched <strong>"{{ search }}"</strong>. Try another search.</p>
+                        <a href="{{ url_for('dashboard') }}">View all products</a>
+                    {% else %}
+                        <h2>Your store is empty</h2>
+                        <p>Products added by the admin will appear here.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </section>
     </main>
+
+    <!-- =========================================================
+         BOTTOM NAVIGATION
+         The old sidebar has been replaced by a fixed bottom bar.
+         The supplied project icons are reused here.
+         ========================================================= -->
+    <nav class="bottom-nav" aria-label="Main navigation">
+        <a class="nav-item active" href="{{ url_for('dashboard') }}">
+            <img src="{{ url_for('static', filename='products.jpg') }}" alt="">
+            <span>Shop</span>
+        </a>
+
+        <a class="nav-item" href="{{ url_for('cart') }}">
+            <span class="nav-icon-wrap">
+                <img src="{{ url_for('static', filename='cart.jpg') }}" alt="">
+                {% if cart_count %}
+                    <b class="cart-badge">{{ cart_count }}</b>
+                {% endif %}
+            </span>
+            <span>Cart</span>
+        </a>
+
+        <button class="nav-item menu-button" type="button" onclick="document.body.classList.toggle('menu-open')" aria-label="Open menu">
+            <img src="{{ url_for('static', filename='menu.jpg') }}" alt="">
+            <span>Menu</span>
+        </button>
+    </nav>
+
+    <!-- Small menu sheet opened from the bottom navigation. -->
+    <div class="menu-overlay" onclick="document.body.classList.remove('menu-open')"></div>
+    <div class="menu-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-title">
+            <div class="account-avatar">{{ user[0]|upper }}</div>
+            <div>
+                <span>Signed in as</span>
+                <strong>{{ user }}</strong>
+            </div>
+        </div>
+
+        <a href="{{ url_for('logout') }}" class="logout-link">
+            <img src="{{ url_for('static', filename='logout.jpg') }}" alt="">
+            <span>Log out</span>
+        </a>
+    </div>
+
 </body>
 </html>
