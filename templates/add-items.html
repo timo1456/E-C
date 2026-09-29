@@ -1,12 +1,72 @@
-<html>
-    <title>Add Items</title>
-    <body>
-        <form method="POST" enctype="multipart/form-data">
-            <input type="text" name="pr-name" id="" placeholder="Product Mame">
-            <input type="number" name="pr-price" id="" placeholder="price">
-            <input type="file" name="pr-img" id="" accept="image/*">
-            <input type="text" name="pr-category" id="">
-            <button>Add Product</button>
-        </form>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store | Add Product</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+
+    <main class="admin-page">
+
+        <header class="admin-header">
+            <a class="brand" href="{{ url_for('add_items') }}">
+                <span class="brand-mark">E</span>
+                <span>
+                    <strong>Store</strong>
+                    <small>Admin panel</small>
+                </span>
+            </a>
+
+            <a class="logout-link" href="{{ url_for('logout') }}">Log out</a>
+        </header>
+
+        <section class="form-page-heading">
+            <a class="back-link" href="{{ url_for('dashboard') }}">← Storefront</a>
+            <span class="eyebrow">PRODUCT CATALOG</span>
+            <h1>Add a product</h1>
+            <p>Enter the product information below. It will become available in the customer store.</p>
+        </section>
+
+        <section class="product-form-card">
+            <!-- Field names are unchanged so the existing Flask add_items route keeps working. -->
+            <form method="POST" enctype="multipart/form-data" class="product-form">
+                <div class="form-field full">
+                    <label for="pr-name">Product name</label>
+                    <input type="text" name="pr-name" id="pr-name" placeholder="e.g. Wireless Headphones" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="pr-price">Price</label>
+                        <div class="price-input">
+                            <span>₦</span>
+                            <input type="number" name="pr-price" id="pr-price" placeholder="0" min="0" step="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="pr-category">Category</label>
+                        <input type="text" name="pr-category" id="pr-category" placeholder="e.g. Electronics" required>
+                    </div>
+                </div>
+
+                <div class="form-field full">
+                    <label for="pr-img">Product image</label>
+                    <label class="upload-box" for="pr-img">
+                        <span class="upload-icon">↑</span>
+                        <strong>Choose an image</strong>
+                        <small>JPG, PNG or another supported image format</small>
+                        <input type="file" name="pr-img" id="pr-img" accept="image/*">
+                    </label>
+                </div>
+
+                <button class="submit-button" type="submit">Add product <span>→</span></button>
+            </form>
+        </section>
+
+    </main>
+
+</body>
 </html>
