@@ -18,7 +18,7 @@ body {
 aside {
     background-color: aquamarine;
     min-height: 100vh;
-    width: 220px;
+    width: 100px;
     flex-shrink: 0;
     margin: 0;
     padding: 24px 16px;
