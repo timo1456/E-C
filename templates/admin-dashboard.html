@@ -3,15 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Store | Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
 </head>
 <body>
-    <p>Welcome {{ user }}</p>
 
-    <div>
-        <p>Add store items</p>
-        <a href="/add-items">-&gt;</a>
-    </div>
-    <a href="/logout">Logout</a>
+    <main class="admin-page">
+
+        <!-- Admin header follows the same Store/E visual language as the customer pages. -->
+        <header class="admin-header">
+            <a class="brand" href="{{ url_for('add_items') }}">
+                <span class="brand-mark">E</span>
+                <span>
+                    <strong>Store</strong>
+                    <small>Admin panel</small>
+                </span>
+            </a>
+
+            <a class="logout-link" href="{{ url_for('logout') }}">Log out</a>
+        </header>
+
+        <section class="admin-hero">
+            <div>
+                <span class="eyebrow">STORE MANAGEMENT</span>
+                <h1>Welcome, {{ user }}</h1>
+                <p>Manage the products that appear in your customer store.</p>
+            </div>
+            <div class="admin-mark">E</div>
+        </section>
+
+        <section class="admin-section">
+            <div class="section-heading">
+                <div>
+                    <span class="section-label">PRODUCTS</span>
+                    <h2>What would you like to do?</h2>
+                </div>
+            </div>
+
+            <div class="admin-grid">
+                <a class="admin-card primary" href="{{ url_for('add_items') }}">
+                    <div class="card-icon">+</div>
+                    <div>
+                        <span class="card-label">CATALOG</span>
+                        <h3>Add a product</h3>
+                        <p>Add a product with its name, price, category and image.</p>
+                    </div>
+                    <span class="card-arrow">→</span>
+                </a>
+
+                <div class="admin-card info">
+                    <div class="card-icon">↗</div>
+                    <div>
+                        <span class="card-label">CUSTOMER VIEW</span>
+                        <h3>Storefront</h3>
+                        <p>Products you add are displayed on the customer dashboard.</p>
+                    </div>
+                    <a class="card-arrow" href="{{ url_for('dashboard') }}">→</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
 </body>
 </html>
