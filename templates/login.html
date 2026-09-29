@@ -1,35 +1,59 @@
-<html>
-    <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Store | Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='log.css') }}">
 </head>
 <body>
-    <div class="container">
-    <H1>WELCOME BACK!</H1>
-    <p style="text-align: left;">Login into your account</p>
-    <p>{{ invalid }}</p>
-     <form method="POST">
-        <label>Email</label>
-        <input class="input" name="email" type="email" placeholder="Enter your email" required><br>
-        <div class="pass-container">
-        </div><br>
-        <label>Password</label>
-        <input class="input" name="password" type="password" placeholder="Enter your password" required>
-        <div class="pass-container" style="text-align: left; font-size: 14px;">
-            <div>
-                <input style="transform: scale(0.8);" type="checkbox">
-                <label>Remember Me</label>
+    <main class="auth-page">
+        <section class="auth-card">
+            <div class="brand">
+                <span class="brand-mark">E</span>
+                <div>
+                    <strong>Store</strong>
+                    <span>Shop smarter</span>
+                </div>
             </div>
-        </div><br>
-        <button>Login</button>
-     </form>
-     <p class="account">
-        Don't have an account
-        <a href="/register"> Create Account</a>
-     </p><br>
-     <a href="">Forgot password?</a>
-    </div>
+
+            <div class="auth-heading">
+                <span class="eyebrow">WELCOME BACK</span>
+                <h1>Sign in to your account.</h1>
+                <p>Continue shopping and keep track of your cart.</p>
+            </div>
+
+            {% if invalid %}
+                <div class="alert">{{ invalid }}</div>
+            {% endif %}
+
+            <form method="POST" class="auth-form">
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+                </div>
+
+                <div class="field">
+                    <div class="field-label">
+                        <label for="password">Password</label>
+                        <a href="#" class="small-link">Forgot password?</a>
+                    </div>
+                    <input id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required>
+                </div>
+
+                <label class="remember">
+                    <input type="checkbox">
+                    <span>Remember me</span>
+                </label>
+
+                <button type="submit" class="primary-button">Sign in</button>
+            </form>
+
+            <p class="auth-switch">
+                Don't have an account?
+                <a href="{{ url_for('register') }}">Create one</a>
+            </p>
+        </section>
+    </main>
 </body>
 </html>
