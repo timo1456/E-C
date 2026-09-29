@@ -3,107 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Cart</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='cs-dash.css') }}">
-    <style>
-        .cart-page { width: 100%; }
-        .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .cart-table { width: 100%; border-collapse: collapse; background: white; }
-        .cart-table th, .cart-table td { padding: 14px; border-bottom: 1px solid #ddd; text-align: left; }
-        .cart-product { display: flex; align-items: center; gap: 12px; }
-        .cart-product img, .cart-no-image { width: 70px; height: 70px; object-fit: cover; background: #ddd; display: flex; align-items: center; justify-content: center; }
-        .quantity-controls { display: flex; align-items: center; gap: 8px; }
-        .quantity-controls form { margin: 0; }
-        .quantity-controls button, .remove-button { padding: 7px 10px; border: 1px solid #aaa; background: white; cursor: pointer; border-radius: 4px; }
-        .remove-button { color: #b00020; }
-        .cart-total { text-align: right; margin-top: 20px; font-size: 22px; font-weight: bold; }
-        .empty-cart { background: white; padding: 50px; text-align: center; }
-    </style>
+    <title>Store | Cart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='cart.css') }}">
 </head>
 <body>
-    <aside>
-        <h2>Store</h2>
-        <a href="{{ url_for('dashboard') }}">Products</a>
-        <a href="{{ url_for('cart') }}">Cart</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
-    </aside>
 
-    <main class="customer-content cart-page">
-        <div class="cart-header">
+    <main class="cart-page">
+
+        <!-- Brand/header keeps the cart visually consistent with the customer dashboard. -->
+        <header class="cart-header">
+            <a class="brand" href="{{ url_for('dashboard') }}">
+                <span class="brand-mark">E</span>
+                <span>
+                    <strong>Store</strong>
+                    <small>Shop smarter</small>
+                </span>
+            </a>
+
+            <a class="continue-link" href="{{ url_for('dashboard') }}">
+                ← Continue shopping
+            </a>
+        </header>
+
+        <section class="cart-heading">
             <div>
-                <p class="welcome">Welcome, {{ user }}</p>
+                <span class="eyebrow">YOUR SHOPPING BAG</span>
                 <h1>Your Cart</h1>
+                <p>Review your items before you continue shopping.</p>
             </div>
-            <a href="{{ url_for('dashboard') }}">Continue Shopping</a>
-        </div>
+            {% if cart_items %}
+                <span class="item-count">{{ cart_items|length }} item{% if cart_items|length != 1 %}s{% endif %}</span>
+            {% endif %}
+        </section>
 
         {% if cart_items %}
-            <!-- =====================================================
-                 CART TABLE
-                 Every row represents a CartItem belonging to the
-                 logged-in customer.
-                 ===================================================== -->
-            <table class="cart-table">
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Subtotal</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
+            <!-- Each row represents one CartItem belonging to the logged-in customer. -->
+            <section class="cart-layout">
+                <div class="cart-list">
                     {% for item in cart_items %}
-                        <tr>
-                            <td>
-                                <div class="cart-product">
-                                    {% if item.product.pr_img %}
-                                        <img src="{{ url_for('product_image', product_id=item.product.id) }}" alt="{{ item.product.pr_name }}">
-                                    {% else %}
-                                        <div class="cart-no-image">No image</div>
-                                    {% endif %}
-                                    <span>{{ item.product.pr_name }}</span>
-                                </div>
-                            </td>
-                            <td>₦{{ "{:,.0f}".format(item.product.pr_price) }}</td>
-                            <td>
-                                <div class="quantity-controls">
+                        <article class="cart-item">
+                            <div class="cart-product-image">
+                                {% if item.product.pr_img %}
+                                    <img src="{{ url_for('product_image', product_id=item.product.id) }}" alt="{{ item.product.pr_name }}">
+                                {% else %}
+                                    <span>No image</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="cart-product-info">
+                                <span class="category">{{ item.product.pr_category }}</span>
+                                <h2>{{ item.product.pr_name }}</h2>
+                                <p class="unit-price">₦{{ "{:,.0f}".format(item.product.pr_price) }} each</p>
+
+                                <div class="cart-actions">
                                     <!-- Decrease quantity by one. -->
                                     <form method="POST" action="{{ url_for('decrease_cart_item', item_id=item.id) }}">
-                                        <button type="submit">−</button>
+                                        <button class="quantity-button" type="submit" aria-label="Decrease quantity">−</button>
                                     </form>
 
-                                    <strong>{{ item.quantity }}</strong>
+                                    <strong class="quantity">{{ item.quantity }}</strong>
 
                                     <!-- Increase quantity by one. -->
                                     <form method="POST" action="{{ url_for('increase_cart_item', item_id=item.id) }}">
-                                        <button type="submit">+</button>
+                                        <button class="quantity-button" type="submit" aria-label="Increase quantity">+</button>
+                                    </form>
+
+                                    <!-- Remove the whole product from the cart. -->
+                                    <form class="remove-form" method="POST" action="{{ url_for('remove_cart_item', item_id=item.id) }}">
+                                        <button class="remove-button" type="submit">Remove</button>
                                     </form>
                                 </div>
-                            </td>
-                            <td>₦{{ "{:,.0f}".format(item.product.pr_price * item.quantity) }}</td>
-                            <td>
-                                <!-- Remove the whole product from the cart. -->
-                                <form method="POST" action="{{ url_for('remove_cart_item', item_id=item.id) }}">
-                                    <button class="remove-button" type="submit">Remove</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                            </div>
 
-            <div class="cart-total">
-                Total: ₦{{ "{:,.0f}".format(total) }}
-            </div>
+                            <strong class="item-subtotal">
+                                ₦{{ "{:,.0f}".format(item.product.pr_price * item.quantity) }}
+                            </strong>
+                        </article>
+                    {% endfor %}
+                </div>
+
+                <!-- Summary card uses the total already calculated by the Flask route. -->
+                <aside class="summary-card">
+                    <span class="summary-label">ORDER SUMMARY</span>
+                    <div class="summary-row">
+                        <span>Items</span>
+                        <span>{{ cart_items|length }}</span>
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <strong>₦{{ "{:,.0f}".format(total) }}</strong>
+                    </div>
+                    <a class="shop-button" href="{{ url_for('dashboard') }}">Continue shopping</a>
+                </aside>
+            </section>
         {% else %}
-            <div class="empty-cart">
+            <section class="empty-cart">
+                <div class="empty-icon">🛒</div>
+                <span class="eyebrow">NOTHING HERE YET</span>
                 <h2>Your cart is empty</h2>
-                <p>Add products from the dashboard to see them here.</p>
-                <a href="{{ url_for('dashboard') }}">Browse Products</a>
-            </div>
+                <p>Add products from the store and they will appear here.</p>
+                <a class="shop-button" href="{{ url_for('dashboard') }}">Browse products</a>
+            </section>
         {% endif %}
+
     </main>
+
 </body>
 </html>
