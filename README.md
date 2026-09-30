@@ -30,7 +30,7 @@ Change the credentials before using the application publicly.
 
 ## Vercel
 
-Vercel now supports Flask applications directly, so this project keeps the Flask entry point at `app.py` and does not use an `api/` wrapper. citeturn0search1turn0search0
+Vercel supports Flask applications directly, so this project keeps the Flask entry point at `app.py` and does not use an `api/` wrapper.
 
 The application automatically uses `/tmp/store.db` when Vercel sets the `VERCEL` environment variable. This makes SQLite usable for the running function, but Vercel's deployed filesystem is not persistent storage. Product/user changes made at runtime therefore should not be treated as permanent data.
 
