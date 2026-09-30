@@ -31,6 +31,7 @@
 
         <section class="product-form-card">
             <!-- Field names are unchanged so the existing Flask add_items route keeps working. -->
+            {% if error %}<div class="form-error">{{ error }}</div>{% endif %}
             <form method="POST" enctype="multipart/form-data" class="product-form">
                 <div class="form-field full">
                     <label for="pr-name">Product name</label>
